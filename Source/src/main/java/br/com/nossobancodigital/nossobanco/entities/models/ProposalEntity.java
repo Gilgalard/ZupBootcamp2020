@@ -37,7 +37,7 @@ public class ProposalEntity {
 	
 	private int zipCode;
 	private String streetName;
-	private String streetComplement;
+	private String addressComplement;
 	private String districtName;
 	private String cityName;
 	private String stateName;
@@ -118,11 +118,11 @@ public class ProposalEntity {
 	}
 
 	public String getStreetComplement() {
-		return streetComplement;
+		return addressComplement;
 	}
 
-	public void setStreetComplement(String streetComplement) {
-		this.streetComplement = streetComplement;
+	public void setAddressComplement(String addressComplement) {
+		this.addressComplement = addressComplement;
 	}
 
 	public String getDistrictName() {

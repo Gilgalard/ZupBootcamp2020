@@ -8,7 +8,7 @@ import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.enums.ProposalAcceptStatusEnum;
 import br.com.nossobancodigital.nossobanco.enums.ProposalStepEnum;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
-import br.com.nossobancodigital.nossobanco.responses.FirstStepRegistrationResponseEntity;
+import br.com.nossobancodigital.nossobanco.responses.RegistrationResponseEntity;
 import br.com.nossobancodigital.nossobanco.validators.FirstStepRegistrationValidator;
 
 @Service
@@ -30,8 +30,8 @@ public class FirstStepRegistrationService {
 		return proposal;
 	}
 	
-	public FirstStepRegistrationResponseEntity save(FirstStepRegistrationEntity firstStepRegistrationEntity) {
-		FirstStepRegistrationResponseEntity response = validator.validate(firstStepRegistrationEntity);
+	public RegistrationResponseEntity save(FirstStepRegistrationEntity firstStepRegistrationEntity) {
+		RegistrationResponseEntity response = validator.validate(firstStepRegistrationEntity);
 		
 		if (response.getPassed()) {
 			ProposalEntity proposal = convertToProposal(firstStepRegistrationEntity);
