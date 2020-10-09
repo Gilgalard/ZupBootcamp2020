@@ -4,6 +4,12 @@ public class RegistrationErrorEntity {
 	private String fieldName;
 	private String description;
 	
+	public RegistrationErrorEntity(String fieldName, String description) {
+		super();
+		this.fieldName = fieldName;
+		this.description = description;
+	}
+
 	public String getFieldName() {
 		return fieldName;
 	}

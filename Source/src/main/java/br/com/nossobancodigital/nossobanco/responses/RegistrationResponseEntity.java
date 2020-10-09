@@ -3,7 +3,7 @@ package br.com.nossobancodigital.nossobanco.responses;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstStepRegistrationResponseEntity {
+public class RegistrationResponseEntity {
 	private Boolean passed = false;
 	private Long id;
 	private List<RegistrationErrorEntity> errors = new ArrayList<>();

@@ -5,17 +5,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static java.util.Calendar.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationEntity;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
-import br.com.nossobancodigital.nossobanco.responses.FirstStepRegistrationResponseEntity;
+import br.com.nossobancodigital.nossobanco.responses.RegistrationResponseEntity;
 import br.com.nossobancodigital.nossobanco.responses.RegistrationErrorEntity;
 
 @Component
@@ -37,18 +35,6 @@ public class FirstStepRegistrationValidator {
 	@Autowired
 	private ProposalRepository proposalRepository;
 	
-	private RegistrationErrorEntity createError(String fieldName, String description) {
-		RegistrationErrorEntity error = new RegistrationErrorEntity();
-		error.setFieldName(fieldName);
-		error.setDescription(description);
-		
-		return error;
-	}
-	
-	private void registerError(FirstStepRegistrationResponseEntity results, String fieldName, String errorDescription) {
-		results.getErrors().add(createError(fieldName, errorDescription));
-	}
-	
 	public static int getDiffYears(Date first, Date last) {
 	    Calendar a = getCalendar(first);
 	    Calendar b = getCalendar(last);
@@ -66,62 +52,64 @@ public class FirstStepRegistrationValidator {
 	    return cal;
 	}
 	
-	private Boolean validateFirstName(FirstStepRegistrationEntity data, FirstStepRegistrationResponseEntity result) {
+	private Boolean validateFirstName(FirstStepRegistrationEntity data, RegistrationResponseEntity result) {
 		Boolean validationResult = !StringUtils.isEmpty(data.getFirstName());
 				
-		if (!validationResult) registerError(result, FIRST_NAME_FIELD_NAME, EMPTY_FIELD_DESCRIPTION); 
+		if (!validationResult) result.getErrors()
+			.add(new RegistrationErrorEntity(FIRST_NAME_FIELD_NAME, EMPTY_FIELD_DESCRIPTION)); 
 		
 		return validationResult;
 	}
 	
-	private Boolean validateLastName(FirstStepRegistrationEntity data, FirstStepRegistrationResponseEntity result) {
+	private Boolean validateLastName(FirstStepRegistrationEntity data, RegistrationResponseEntity result) {
 		Boolean validationResult = !StringUtils.isEmpty(data.getLastName()); 
 		
-		if (!validationResult) registerError(result, LAST_NAME_FIELD_NAME, EMPTY_FIELD_DESCRIPTION);
+		if (!validationResult) result.getErrors()
+			.add(new RegistrationErrorEntity(LAST_NAME_FIELD_NAME, EMPTY_FIELD_DESCRIPTION));
 		
 		return validationResult;
 	}
 	
-	private Boolean validateEmail(FirstStepRegistrationEntity data, FirstStepRegistrationResponseEntity result) {
+	private Boolean validateEmail(FirstStepRegistrationEntity data, RegistrationResponseEntity result) {
 		String email = data.getEmail();
 				
 		if (StringUtils.isEmpty(email)) {
-			registerError(result, EMAIL_FIELD_NAME, EMPTY_FIELD_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(EMAIL_FIELD_NAME, EMPTY_FIELD_DESCRIPTION));
 			return false;
 		}
 		
 		if (!EmailValidator.getInstance().isValid(email)) {
-			registerError(result, EMAIL_FIELD_NAME, INVALID_FORMAT_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(EMAIL_FIELD_NAME, INVALID_FORMAT_DESCRIPTION));
 			return false;
 		}
 		
 		if (proposalRepository.findByEmailIgnoreCase(email) != null) {
-			registerError(result, EMAIL_FIELD_NAME, ALREADY_EXISTS_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(EMAIL_FIELD_NAME, ALREADY_EXISTS_DESCRIPTION));
 			return false;
 		}
 
 		return true;
 	}
 	
-	private Boolean validateBirthDate(FirstStepRegistrationEntity data, FirstStepRegistrationResponseEntity result) {
+	private Boolean validateBirthDate(FirstStepRegistrationEntity data, RegistrationResponseEntity result) {
 		int requesterAge = getDiffYears(data.getBirthDate(), new java.util.Date());
 		
 		if (requesterAge < MAJORITY_AGE) {
-			registerError(result, BIRTH_DATE_FIELD_NAME, INVALID_DATE_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(BIRTH_DATE_FIELD_NAME, INVALID_DATE_DESCRIPTION));
 			return false;
 		}
 		
 		return true;
 	}
 	
-	private Boolean validateDriverLicenseNo(FirstStepRegistrationEntity data, FirstStepRegistrationResponseEntity result) {
+	private Boolean validateDriverLicenseNo(FirstStepRegistrationEntity data, RegistrationResponseEntity result) {
 		final int[][] driverLicenseValidationDigits = {{9, 8, 7, 6, 5, 4, 3, 2, 1},	{1, 2, 3, 4, 5, 6, 7, 8, 9}};
 		
 		String driverLicenseNo = data.getDriverLicenseNo();
 
 		// 1. Check only the format. But this is necessary for the digit conference algorithm.
 		if (!Pattern.matches(DRIVER_LICENSE_NO_REGEX, driverLicenseNo)) {
-			registerError(result, DRIVER_LICENSE_NO_FIELD_NAME, INVALID_FORMAT_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(DRIVER_LICENSE_NO_FIELD_NAME, INVALID_FORMAT_DESCRIPTION));
 			return false;
 		}		
 		
@@ -155,15 +143,15 @@ public class FirstStepRegistrationValidator {
 		}
 		
 		if (!licenseDigitNo.equals(conferenceDigit)) {
-			registerError(result, DRIVER_LICENSE_NO_FIELD_NAME, INVALID_FORMAT_DESCRIPTION);
+			result.getErrors().add(new RegistrationErrorEntity(DRIVER_LICENSE_NO_FIELD_NAME, INVALID_FORMAT_DESCRIPTION));
 			return false;
 		}
 		
 		return true;
 	}
 	
-	public FirstStepRegistrationResponseEntity validate(FirstStepRegistrationEntity data) {
-		FirstStepRegistrationResponseEntity result = new FirstStepRegistrationResponseEntity();
+	public RegistrationResponseEntity validate(FirstStepRegistrationEntity data) {
+		RegistrationResponseEntity result = new RegistrationResponseEntity();
 		Boolean firstNameValidationResult = validateFirstName(data, result);
 		Boolean secondNameValidationResult = validateLastName(data, result);
 		Boolean emailValidationResult = validateEmail(data, result);

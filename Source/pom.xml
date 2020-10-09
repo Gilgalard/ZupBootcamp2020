@@ -11,7 +11,7 @@
 	<groupId>br.com.nossobancodigital</groupId>
 	<artifactId>nossobancodigital</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>NossoBancoDigital</name>
+	<name>nossobancodigital</name>
 	<description>Zup Bootcamp 2020 project Nosso Banco Digital</description>
 
 	<properties>
