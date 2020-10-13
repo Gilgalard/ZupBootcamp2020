@@ -1,48 +1,36 @@
 package br.com.nossobancodigital.nossobanco.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationEntity;
+import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationRequest;
 import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.enums.ProposalAcceptStatusEnum;
 import br.com.nossobancodigital.nossobanco.enums.ProposalStepEnum;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
-import br.com.nossobancodigital.nossobanco.responses.RegistrationResponseEntity;
-import br.com.nossobancodigital.nossobanco.validators.FirstStepRegistrationValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class FirstStepRegistrationService {	
-	@Autowired
-	private ProposalRepository proposalRepository;
+	private final ProposalRepository proposalRepository;
 	
-	@Autowired
-	FirstStepRegistrationValidator validator;
-	
-	private ProposalEntity convertToProposal(FirstStepRegistrationEntity firstStepRegistrationEntity) {
+	private ProposalEntity createProposalEntityFromFirstStepRegistrationRequest(
+			FirstStepRegistrationRequest firstStepRegistrationRequest) {
 		ProposalEntity proposal = new ProposalEntity();
-		proposal.setFirstName(firstStepRegistrationEntity.getFirstName());
-		proposal.setLastName(firstStepRegistrationEntity.getLastName());
-		proposal.setEmail(firstStepRegistrationEntity.getEmail());
-		proposal.setDriverLicenseNo(firstStepRegistrationEntity.getDriverLicenseNo());
-		proposal.setBirthDate(firstStepRegistrationEntity.getBirthDate());
+		proposal.setFirstName(firstStepRegistrationRequest.getFirstName());
+		proposal.setLastName(firstStepRegistrationRequest.getLastName());
+		proposal.setEmail(firstStepRegistrationRequest.getEmail());
+		proposal.setDriverLicenseNo(firstStepRegistrationRequest.getDriverLicenseNo());
+		proposal.setBirthDate(firstStepRegistrationRequest.getBirthDate());
 		
 		return proposal;
 	}
 	
-	public RegistrationResponseEntity save(FirstStepRegistrationEntity firstStepRegistrationEntity) {
-		RegistrationResponseEntity response = validator.validate(firstStepRegistrationEntity);
-		
-		if (response.getPassed()) {
-			ProposalEntity proposal = convertToProposal(firstStepRegistrationEntity);
-			proposal.setProposalStep(ProposalStepEnum.FIRST_STEP);
-			proposal.setAcceptanceStatus(ProposalAcceptStatusEnum.PENDING);
-			
-			Long id = proposalRepository.save(proposal).getId();
-			
-			response.setId(id);
-		}
-		
-		return response;
+	public ProposalEntity save(FirstStepRegistrationRequest firstStepRegistrationRequest) {
+		ProposalEntity proposalEntity =
+				createProposalEntityFromFirstStepRegistrationRequest(firstStepRegistrationRequest);
+		proposalEntity.setProposalStep(ProposalStepEnum.FIRST_STEP);
+		proposalEntity.setAcceptanceStatus(ProposalAcceptStatusEnum.PENDING);
+
+		return proposalRepository.save(proposalEntity);
 	}
 }

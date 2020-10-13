@@ -1,52 +1,46 @@
 package br.com.nossobancodigital.nossobanco.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import br.com.nossobancodigital.nossobanco.entities.SecondStepRegistrationEntity;
+import br.com.nossobancodigital.nossobanco.entities.SecondStepRegistrationRequest;
 import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.enums.ProposalStepEnum;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
-import br.com.nossobancodigital.nossobanco.responses.RegistrationResponseEntity;
-import br.com.nossobancodigital.nossobanco.validators.SecondStepRegistrationValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SecondStepRegistrationService {
-	@Autowired
-	private ProposalRepository proposalRepository;
-	
-	@Autowired
-	SecondStepRegistrationValidator validator;
-	
-	private ProposalEntity convertToProposal(Long id, SecondStepRegistrationEntity secondStepRegistrationEntity) {
-		ProposalEntity proposalEntity = proposalRepository.findById(id).get(); // It's safe to do that because this
-		                                                                       // method is only called when passed
-		                                                                       // to validations, which check for the
-		                                                                       // non-nullify of the id and the existence
-		                                                                       // of the proposal.
+	private final ProposalRepository proposalRepository;
 
-		proposalEntity.setZipCode(secondStepRegistrationEntity.getZipCode());
-		proposalEntity.setStreetName(secondStepRegistrationEntity.getStreetName());
-		proposalEntity.setAddressComplement(secondStepRegistrationEntity.getAddressComplement());
-		proposalEntity.setDistrictName(secondStepRegistrationEntity.getDistrictName());
-		proposalEntity.setCityName(secondStepRegistrationEntity.getCityName());
-		proposalEntity.setStateName(secondStepRegistrationEntity.getStateName());
-		
-		return proposalEntity;
-	}
-	
-	public RegistrationResponseEntity save(Long id, SecondStepRegistrationEntity secondStepRegistrationEntity) {
-		RegistrationResponseEntity response = validator.validate(id, secondStepRegistrationEntity);
-		
-		if (response.getPassed()) {
-			ProposalEntity proposal = convertToProposal(id, secondStepRegistrationEntity);
-			proposal.setProposalStep(ProposalStepEnum.SECOND_STEP);
-			
-			proposalRepository.save(proposal);
-			
-			response.setId(id);
+	public ProposalEntity save(
+			Long id,
+			SecondStepRegistrationRequest secondStepRegistrationRequest) {
+		ProposalEntity proposalEntity = Optional.ofNullable(proposalRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
+				.get();
+
+		if (proposalEntity.getProposalStep() != ProposalStepEnum.FIRST_STEP) {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
-		
-		return response;
+
+		completeProposalEntity(proposalEntity, secondStepRegistrationRequest);
+		proposalEntity.setProposalStep(ProposalStepEnum.SECOND_STEP);
+
+		return proposalRepository.save(proposalEntity);
+	}
+
+	private void completeProposalEntity(
+			ProposalEntity proposalEntity,
+			SecondStepRegistrationRequest secondStepRegistrationRequest) {
+		proposalEntity.setZipCode(secondStepRegistrationRequest.getZipCode());
+		proposalEntity.setStreetName(secondStepRegistrationRequest.getStreetName());
+		proposalEntity.setAddressComplement(secondStepRegistrationRequest.getAddressComplement());
+		proposalEntity.setDistrictName(secondStepRegistrationRequest.getDistrictName());
+		proposalEntity.setCityName(secondStepRegistrationRequest.getCityName());
+		proposalEntity.setStateName(secondStepRegistrationRequest.getStateName());
 	}
 }
