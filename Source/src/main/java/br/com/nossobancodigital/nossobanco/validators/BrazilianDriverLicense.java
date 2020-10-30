@@ -13,7 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BrazilianDriverLicense {
-    String message() default "{brazilianDriverLicense.message}";
+    String message() default "{validation.brazilianDriverLicense.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

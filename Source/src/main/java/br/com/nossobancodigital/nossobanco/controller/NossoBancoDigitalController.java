@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
@@ -102,8 +103,13 @@ public class NossoBancoDigitalController {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<Object> handleNotFoundExceptions(NotFoundException notFoundException) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    ResponseEntity<Object> handleEntityNotFoundExceptions(EntityNotFoundException entityNotFoundException) {
+        return ResponseEntity.notFound().build();
+    }
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(UnsupportedOperationException.class)
+    ResponseEntity<Object> handleUnsupportedOperationException(UnsupportedOperationException UnsupportedOperationException) {
         return ResponseEntity.notFound().build();
     }
 }

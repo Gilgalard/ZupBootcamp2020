@@ -22,7 +22,7 @@ public class AgeMajorityValidator implements ConstraintValidator<AgeMajority, Da
 
         int requesterAge = getDiffYears(date, new java.util.Date());
 
-        return requesterAge <= MAJORITY_AGE;
+        return requesterAge >= MAJORITY_AGE;
     }
 
     private static int getDiffYears(Date first, Date last) {

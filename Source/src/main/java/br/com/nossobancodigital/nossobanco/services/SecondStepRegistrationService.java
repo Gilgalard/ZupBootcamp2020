@@ -7,8 +7,10 @@ import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -20,11 +22,11 @@ public class SecondStepRegistrationService {
 			Long id,
 			SecondStepRegistrationRequest secondStepRegistrationRequest) {
 		ProposalEntity proposalEntity = Optional.ofNullable(proposalRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
+				.orElseThrow(EntityNotFoundException::new))
 				.get();
 
 		if (proposalEntity.getProposalStep() != ProposalStepEnum.FIRST_STEP) {
-			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+			throw new UnsupportedOperationException();
 		}
 
 		completeProposalEntity(proposalEntity, secondStepRegistrationRequest);

@@ -26,7 +26,6 @@ public class FirstStepRegistrationRequest {
 	private String driverLicenseNo;
 
 	@NotNull
-	@Past
 	@AgeMajority
 	private Date birthDate;
 }

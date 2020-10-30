@@ -10,24 +10,23 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class SecondStepRegistrationRequest {
 	private static final String ZIP_CODE_REGEX = "[0-9]{7,8}";
-	private final String FIELD_REQUIRED = "required";
-	private final String FIELD_INVALID = "invalid";
+	private static final String INVALID_ZIP_CODE = "CEP inválido.";
 
-	@Range(min=1000000, max=99999999, message = FIELD_INVALID)
+	@Range(min=1000000, max=99999999, message = INVALID_ZIP_CODE)
 	private Integer zipCode;
 
-	@NotBlank(message = FIELD_REQUIRED)
+	@NotBlank
 	private String streetName;
 
-	@NotBlank(message = FIELD_REQUIRED)
+	@NotBlank
 	private String addressComplement;
 
-	@NotBlank(message = FIELD_REQUIRED)
+	@NotBlank
 	private String districtName;
 
-	@NotBlank(message = FIELD_REQUIRED)
+	@NotBlank
 	private String cityName;
 
-	@NotBlank(message = FIELD_REQUIRED)
+	@NotBlank
 	private String stateName;
 }
