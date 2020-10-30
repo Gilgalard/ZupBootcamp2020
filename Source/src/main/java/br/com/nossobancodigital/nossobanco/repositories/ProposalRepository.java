@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
-import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
+import br.com.nossobancodigital.nossobanco.entities.ProposalEntity;
 
 @Component
 public interface ProposalRepository extends JpaRepository<ProposalEntity, Long> {

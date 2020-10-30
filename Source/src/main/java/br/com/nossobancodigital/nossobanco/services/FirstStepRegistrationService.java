@@ -1,7 +1,7 @@
 package br.com.nossobancodigital.nossobanco.services;
 
-import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
+import br.com.nossobancodigital.nossobanco.dto.FirstStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.entities.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.enums.ProposalAcceptStatusEnum;
 import br.com.nossobancodigital.nossobanco.enums.ProposalStepEnum;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;

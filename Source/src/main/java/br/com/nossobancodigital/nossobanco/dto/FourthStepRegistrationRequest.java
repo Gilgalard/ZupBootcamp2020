@@ -1,4 +1,4 @@
-package br.com.nossobancodigital.nossobanco.entities;
+package br.com.nossobancodigital.nossobanco.dto;
 
 import lombok.Getter;
 import lombok.Setter;

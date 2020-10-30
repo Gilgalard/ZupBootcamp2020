@@ -1,6 +1,6 @@
 package br.com.nossobancodigital.nossobanco.validators;
 
-import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.dto.FirstStepRegistrationRequest;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

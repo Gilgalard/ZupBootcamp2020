@@ -1,8 +1,8 @@
 package br.com.nossobancodigital.nossobanco.controllers;
 
 import br.com.nossobancodigital.nossobanco.controller.NossoBancoDigitalController;
-import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
+import br.com.nossobancodigital.nossobanco.dto.FirstStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.entities.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.repositories.ProposalRepository;
 import br.com.nossobancodigital.nossobanco.services.FirstStepRegistrationService;
 import br.com.nossobancodigital.nossobanco.services.FourthStepRegistrationService;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(NossoBancoDigitalController.class)
 @RequiredArgsConstructor
+@DataJpaTest
 public class NossoBancoDigitalControllerTest {
     private static final Long ID = 1L;
     private static final String FIRST_NAME = "First name";
@@ -62,7 +64,10 @@ public class NossoBancoDigitalControllerTest {
 
         when(firstStepRegistrationService.save(any(FirstStepRegistrationRequest.class))).thenReturn(proposalEntity);
 
-        mockMvc.perform(post("/firstStepRegistration").contentType(MediaType.APPLICATION_JSON).content(firstStepRegistrationRequestString)).andExpect(status().isOk());
+        mockMvc.perform(post("/firstStepRegistration")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(firstStepRegistrationRequestString))
+                .andExpect(status().isOk());
     }
 
     private FirstStepRegistrationRequest createFirstStepRegistrationRequest(Boolean withData) {

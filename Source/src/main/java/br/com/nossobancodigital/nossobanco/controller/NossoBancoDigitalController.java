@@ -1,10 +1,10 @@
 package br.com.nossobancodigital.nossobanco.controller;
 
-import br.com.nossobancodigital.nossobanco.entities.FirstStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.FourthStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.SecondStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.ThirdStepRegistrationRequest;
-import br.com.nossobancodigital.nossobanco.entities.models.ProposalEntity;
+import br.com.nossobancodigital.nossobanco.dto.FirstStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.dto.FourthStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.dto.SecondStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.dto.ThirdStepRegistrationRequest;
+import br.com.nossobancodigital.nossobanco.entities.ProposalEntity;
 import br.com.nossobancodigital.nossobanco.services.FirstStepRegistrationService;
 import br.com.nossobancodigital.nossobanco.services.FourthStepRegistrationService;
 import br.com.nossobancodigital.nossobanco.services.SecondStepRegistrationService;
@@ -24,7 +24,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
+@RequestMapping(path = "/api/v1", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class NossoBancoDigitalController {
     private final FirstStepRegistrationService firstStepRegistrationService;

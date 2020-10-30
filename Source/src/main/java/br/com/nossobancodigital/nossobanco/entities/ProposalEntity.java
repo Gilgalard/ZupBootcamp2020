@@ -1,4 +1,4 @@
-package br.com.nossobancodigital.nossobanco.entities.models;
+package br.com.nossobancodigital.nossobanco.entities;
 
 import java.util.Date;
 
